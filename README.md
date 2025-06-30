@@ -1,6 +1,6 @@
-Steps for deployment in local machine
+# Steps for deployment in local machine
 
-Services:
+## Services:
 - java_project_ecom
   -- Git: https://github.com/pumbatimon473/java_project_ecom
 - java_ecom_auth_service
@@ -10,14 +10,15 @@ Services:
 - java_ecom_notification_service
   -- Git: https://github.com/pumbatimon473/java_ecom_notification_service
 
-Pre-requisites:
+## Pre-requisites:
 - Java 17 or above is required
 - MySQL DB must be installed and have the following db schemas created:
 	- ecom_auth_service
 	- ecom
 - Use docker images for the Elasticsearch, Mongo, Redis, Kafka
 
-# Elasticsearch: docker-compose.yml
+### Elasticsearch: docker-compose.yml
+```yaml
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
@@ -28,14 +29,15 @@ services:
     ports:
       - "9200:9200"
     mem_limit: 1g  # Optional hard limit
-
-# Mongo:
+```
+### Mongo:
 docker run --name mongo -p 27017:27017 -d mongo
 
-# Redis:
+### Redis:
 docker run --name redis -p 6379:6379 -d redis
 
-# Kafka: docker-compose.yml
+### Kafka: docker-compose.yml
+```yaml
 services:
   zookeeper:
     image: zookeeper  # confluentinc/cp-zookeeper:7.4.4
@@ -64,61 +66,61 @@ services:
       # KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
+```
 - Mongo DB must have the below database created beforehand
-  -- Database: ecom_cart_service
-  -- Collection: cart
+    - Database: ecom_cart_service
+    - Collection: cart
 
 
-1. Ensure the below environment variables are configured before running the services
+### 1. Ensure the below environment variables are configured before running the services
 
-1.1 java_ecom_auth_service:
+#### 1.1 java_ecom_auth_service:
 
-AUTH_SERVICE_DB_URL	= jdbc:mysql://localhost:3306/ecom_auth_service
-AUTH_SERVICE_DB_USERNAME = admin
-AUTH_SERVICE_DB_PASSWORD = root
-PASS_MIN_LEN = 4
-PASS_MAX_LEN = 12
-PASS_LOWER = false
-PASS_UPPER = false
-PASS_SPECIAL = false
-PASS_DIGIT = false
+- AUTH_SERVICE_DB_URL	= jdbc:mysql://localhost:3306/ecom_auth_service
+- AUTH_SERVICE_DB_USERNAME = admin
+- AUTH_SERVICE_DB_PASSWORD = root
+- PASS_MIN_LEN = 4
+- PASS_MAX_LEN = 12
+- PASS_LOWER = false
+- PASS_UPPER = false
+- PASS_SPECIAL = false
+- PASS_DIGIT = false
 
-1.2 java_project_ecom:
+#### 1.2 java_project_ecom:
 
-ECOM_DB_URL	= jdbc:mysql://localhost:3306/ecom
-ECOM_DB_USERNAME = admin
-ECOM_DB_PASSWORD = root
-ECOM_APP_BASE_URL =	http://localhost:8080 (NOTE: A public app url is required for the payment callbacks to work)
-STRIPE_TEST_SECRET_KEY = <your_stripe_secret_key>
-RAZORPAY_TEST_KEY_ID = <your_razorpay_key_id>
-RAZORPAY_TEST_KEY_SECRET = <your_razorpay_secret>
-AUTH_SERVICE_URL = http://localhost:8090
-KAFKA_SERVER = localhost:29092
-ECOM_ES_HOST_AND_PORT = localhost:9200
+- ECOM_DB_URL	= jdbc:mysql://localhost:3306/ecom
+- ECOM_DB_USERNAME = admin
+- ECOM_DB_PASSWORD = root
+- ECOM_APP_BASE_URL =	http://localhost:8080 (NOTE: A public app url is required for the payment callbacks to work)
+- STRIPE_TEST_SECRET_KEY = <your_stripe_secret_key>
+- RAZORPAY_TEST_KEY_ID = <your_razorpay_key_id>
+- RAZORPAY_TEST_KEY_SECRET = <your_razorpay_secret>
+- AUTH_SERVICE_URL = http://localhost:8090
+- KAFKA_SERVER = localhost:29092
+- ECOM_ES_HOST_AND_PORT = localhost:9200
 
-NOTE: You can obtain a public url through Ngrok
+> NOTE: You can obtain a public url through Ngrok
 CMD:
 ngrok http http://localhost:8080
 
-1.3 java_ecom_cart_service:
+#### 1.3 java_ecom_cart_service:
 
-MONGO_HOST = localhost
-MONGO_PORT = 27017
-MONGO_DB_NAME = ecom_cart_service
-ECOM_APP_URL = http://localhost:8080
-AUTH_SERVICE_HOST = http://localhost:8090
-REDIS_HOST = localhost
-REDIS_PORT = 6379
+- MONGO_HOST = localhost
+- MONGO_PORT = 27017
+- MONGO_DB_NAME = ecom_cart_service
+- ECOM_APP_URL = http://localhost:8080
+- AUTH_SERVICE_HOST = http://localhost:8090
+- REDIS_HOST = localhost
+- REDIS_PORT = 6379
 
-1.4 java_ecom_notification_service
+#### 1.4 java_ecom_notification_service
 
-SPRING_MAIL_HOST = smtp.gmail.com
-SPRING_MAIL_PORT = 587
-SPRING_MAIL_USERNAME = <your_gamil_id>
-SPRING_MAIL_APP_PASSWORD = <your_gmail_app_password>
-KAFKA_SERVER = localhost:29092
+- SPRING_MAIL_HOST = smtp.gmail.com
+- SPRING_MAIL_PORT = 587
+- SPRING_MAIL_USERNAME = <your_gamil_id>
+- SPRING_MAIL_APP_PASSWORD = <your_gmail_app_password>
+- KAFKA_SERVER = localhost:29092
 
-NOTE:
+> NOTE:
 Generating App Password: https://support.google.com/accounts/answer/185833
 
